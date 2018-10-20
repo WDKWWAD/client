@@ -1,5 +1,6 @@
 <template>
   <div class="map-view__box">
+    <LoadingScreen/>
     <PlanJourney canStart="true"/>
     <SwitchButton viewToSwitch="3D" />
   </div>
@@ -8,12 +9,14 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import PlanJourney from '@/components/PlanJourney.vue';
+import LoadingScreen from '@/components/LoadingScreen.vue';
 import SwitchButton from '@/components/SwitchButton.vue';
 
 @Component({
   components: {
     PlanJourney,
     SwitchButton,
+    LoadingScreen
   },
 })
 export default class Home extends Vue {}

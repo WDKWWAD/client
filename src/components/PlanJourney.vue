@@ -1,7 +1,8 @@
 <template>
   <div :class="{collapsed: isCollapsed}" class="popup__box">
-    <div class="popup__background"></div>
-    <div class="popup__expand"></div>
+    <div class="popup__background">
+      <button @click="togglePanel" class="popup__expand"></button>
+    </div>
     <div :class="{'active': canStart == 'true'}" class="popup__action--collapsed">
       <button class="start-icon"></button>
     </div>

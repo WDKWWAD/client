@@ -84,6 +84,10 @@
   &__img {
     width: 50%;
   }
+
+  &__expand {
+    display: none;
+  }
 }
 
 .collapsed {
@@ -100,6 +104,22 @@
       z-index: 0;
     }
 
+    &__expand {
+      @include size(1.7em);
+      background: url('../assets/expand-icon.svg') center / contain no-repeat;
+      border: 0;
+      bottom: 1.5em;
+      cursor: pointer;
+      display: block;
+      left: 1.5em;
+      position: absolute;
+
+      &:active,
+      &:hover {
+        outline: none;
+      }
+    }
+
     &__content {
       display: none;
     }
@@ -107,18 +127,18 @@
     &__action--collapsed {
       &.active {
         @include size(3em);
-        border-radius: 20em;
-        background-color: $color-secondary;
-        display: flex;
         align-items: center;
+        background-color: $color-secondary;
+        border-radius: 20em;
+        content: ' ';
+        display: flex;
         justify-content: center;
         margin-top: 1em;
         z-index: 3;
-        content: ' ';
 
         .start-icon {
           @include size(1.5em);
-          background: transparent url(../assets/start-icon.svg) center / contain no-repeat;
+          background: transparent url('../assets/start-icon.svg') center / contain no-repeat;
           border: 0;
         }
       }
