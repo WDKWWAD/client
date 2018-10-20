@@ -36,7 +36,7 @@
 
   &__action {
     @include font-bold;
-    background-color: rgba(#ffffff, 0.5);
+    background-color: rgba(#fff, .5);
     border: 0;
     border-radius: 10px;
     color: $color-on-dark;
@@ -44,6 +44,10 @@
     padding: .5em 1em;
     text-transform: uppercase;
     transition: all .3s;
+
+    &--collapsed {
+      display: none;
+    }
 
     &.active {
       background-color: $color-secondary;
@@ -79,5 +83,45 @@
 
   &__img {
     width: 50%;
+  }
+}
+
+.collapsed {
+  .popup {
+    &__background {
+      $size-box: 5em;
+      @include size($size-box);
+      background-color: $color-primary;
+      border-radius: 20em;
+      content: ' ';
+      position: absolute;
+      right: -3em;
+      top: -3em;
+      z-index: 0;
+    }
+
+    &__content {
+      display: none;
+    }
+
+    &__action--collapsed {
+      &.active {
+        @include size(3em);
+        border-radius: 20em;
+        background-color: $color-secondary;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1em;
+        z-index: 3;
+        content: ' ';
+
+        .start-icon {
+          @include size(1.5em);
+          background: transparent url(../assets/start-icon.svg) center / contain no-repeat;
+          border: 0;
+        }
+      }
+    }
   }
 }

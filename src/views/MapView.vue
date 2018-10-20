@@ -1,6 +1,6 @@
 <template>
   <div class="map-view__box">
-    <PlanJourney canStart="false"/>
+    <PlanJourney canStart="true"/>
     <SwitchButton viewToSwitch="3D" />
   </div>
 </template>
@@ -26,6 +26,9 @@ export default class Home extends Vue {}
   &__box {
     @include size(100vw, 100vh);
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
   }
 }
