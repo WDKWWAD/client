@@ -1,0 +1,83 @@
+@import './mixins';
+
+.popup {
+  &__box {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    right: 1em;
+    top: 1em;
+  }
+
+  &__content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 17em;
+    position: relative;
+    text-align: center;
+    z-index: 1;
+  }
+
+  &__background {
+    $size-box: 30em;
+    @include size($size-box);
+    background-color: $color-primary;
+    border-radius: 20em;
+    content: ' ';
+    position: absolute;
+    right: -8em;
+    top: -6em;
+    z-index: 0;
+  }
+
+  &__action {
+    @include font-bold;
+    background-color: rgba(#ffffff, 0.5);
+    border: 0;
+    border-radius: 10px;
+    color: $color-on-dark;
+    opacity: .8;
+    padding: .5em 1em;
+    text-transform: uppercase;
+    transition: all .3s;
+
+    &.active {
+      background-color: $color-secondary;
+      color: $color-on-light;
+      opacity: 1;
+    }
+  }
+
+  &__close {
+    @include size(1.5em);
+    align-self: flex-end;
+    background: url('../assets/close-icon.svg') center / cover no-repeat;
+    border: 0;
+    cursor: pointer;
+
+    &:active,
+    &:hover {
+      outline: none;
+    }
+  }
+
+  &__tooltip {
+    @include font-bold;
+    color: $color-on-dark;
+    font-size: .8em;
+  }
+
+  &__title {
+    @include font-bold;
+    color: $color-on-dark;
+    font-size: 1.5em;
+  }
+
+  &__img {
+    width: 50%;
+  }
+}

@@ -1,0 +1,39 @@
+<template>
+  <div class="switch__box">
+    <button class="switch__button">Switch to {{viewToSwitch}} preview</button>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+
+@Component
+export default class SwitchButton extends Vue {
+  @Prop() private viewToSwitch: string = '3D';
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="scss">
+@import '../styles/mixins';
+.switch {
+  &__box {
+    position: absolute;
+    right: 0;
+    bottom: 2em;
+    left: 0;
+    text-align: center;
+  }
+
+  &__button {
+    @include font-bold;
+    padding: 0.5em 1em;
+    background-color: $color-secondary;
+    color: $color-on-light;
+    border: 0;
+    border-radius: 10px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+}
+</style>
