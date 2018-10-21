@@ -1,7 +1,7 @@
 <template>
   <div class="map-view__box">
     <!-- <LoadingScreen/> -->
-    <router-view></router-view>
+    <router-view @addPoint="addPoint" :points="pointManager.currentPoints"></router-view>
     <PlanJourney canStart="true"/>
     <SwitchButton/>
   </div>
@@ -13,6 +13,8 @@ import PlanJourney from '@/components/PlanJourney.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
 import MapNavigator from '@/components/MapNavigator.vue';
 import SwitchButton from '@/components/SwitchButton.vue';
+import PointManager from '@/service/point-manager.service';
+import Point from '@/model/Point.model';
 
 @Component({
   components: {
@@ -22,7 +24,13 @@ import SwitchButton from '@/components/SwitchButton.vue';
     MapNavigator
   },
 })
-export default class MapView extends Vue {}
+export default class MapView extends Vue {
+  public pointManager: PointManager = new PointManager();
+
+  public addPoint(point: Point): void {
+    this.pointManager.addNewPoint(point);
+  }
+}
 </script>
 
 <style scoped lang="scss">

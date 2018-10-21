@@ -5,29 +5,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
+import Point from '@/model/Point.model';
 
 @Component
 export default class MapNavigator extends Vue {
+  @Prop() private points!: { x: number; y: number }[];
+
   private canvasSize = {
     width: 750,
     height: 750
   };
   private canvasBoundingRect: any;
   private canvasCtx: any;
-
-  private points: { x: number; y: number }[] = [];
   private isPressed = false;
-
   private navCanvas: any;
-
-  constructor() {
-    super();
-  }
 
   public mounted() {
     this.$nextTick(function() {
-      console.log(this.$refs);
+      console.log(this.points);
       this.navCanvas = this.$refs.navigatorCanvas as HTMLCanvasElement;
       this.navCanvas.width = this.canvasSize.width;
       this.navCanvas.height = this.canvasSize.height;
@@ -48,30 +44,14 @@ export default class MapNavigator extends Vue {
         );
       };
 
+      this.addMouseListeners();
       console.log("MapNavigator mounted: ", this.$refs);
-      this.navCanvas.onmousedown = (mouseEvent: MouseEvent) => {
-        this.isPressed = true;
-      };
-
-      this.navCanvas.onmouseup = (mouseEvent: MouseEvent) => {
-        if (this.isPressed) {
-          const mouseX = mouseEvent.offsetX;
-          const mouseY = mouseEvent.offsetY;
-
-          console.log(mouseX, mouseY);
-
-          this.points.push({ x: mouseX, y: mouseY });
-          this.drawPoints();
-          this.isPressed = false;
-        }
-      };
-
-      this.navCanvas.onmousemove = (mouseEvent: MouseEvent) => {};
+      this.drawPoints();
     });
   }
 
   public drawPoints(): void {
-    this.points.forEach((element: { x: number; y: number }) => {
+    this.points.forEach((element: Point) => {
       this.canvasCtx.beginPath();
       this.canvasCtx.arc(element.x, element.y, 10, 0, 2 * Math.PI);
       this.canvasCtx.fillStyle = "#fcee5b";
@@ -87,6 +67,23 @@ export default class MapNavigator extends Vue {
       );
       this.canvasCtx.closePath();
     });
+  }
+
+  private addMouseListeners(): void {
+    this.navCanvas.onmousedown = (mouseEvent: MouseEvent) => {
+      this.isPressed = true;
+    };
+
+    this.navCanvas.onmouseup = (mouseEvent: MouseEvent) => {
+      if (this.isPressed) {
+        const pointToAdd = new Point(mouseEvent.offsetX, mouseEvent.offsetY);
+        console.log(pointToAdd);
+
+        this.$emit('addPoint', pointToAdd);
+        this.drawPoints();
+        this.isPressed = false;
+      }
+    };
   }
 }
 </script>

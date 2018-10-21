@@ -2,7 +2,7 @@
     <div id="mapViewer"></div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import {
   WebGLRenderer,
   PerspectiveCamera,
@@ -22,9 +22,11 @@ import {
 } from "three";
 
 import { OrbitControls } from "@avatsaev/three-orbitcontrols-ts";
+import Point from '@/model/Point.model';
 
 @Component
 export default class MapViewer extends Vue {
+  @Prop() private points!: Point[];
   PATH_SPACE = 5;
   path: string = "../assets/example_map.png";
 
@@ -71,7 +73,6 @@ export default class MapViewer extends Vue {
   total_distance: any;
   hypsometric_profile: any;
 
-  pathPoints: { points: Array<{x: number, y: number}> } = {points: []};
   roverPath: Array<any> = [];
 
   public mounted() {
@@ -225,7 +226,7 @@ export default class MapViewer extends Vue {
     this.scene.add(line);
 
     // Draw all points
-    this.pathPoints.points.forEach((point: {x: number, y: number}) => {
+    this.points.forEach((point: Point) => {
       var geometry = new SphereGeometry(5, 32, 32 );
       var material = new MeshBasicMaterial({color: 0x0000ff});
       var sphere = new Mesh(geometry, material);

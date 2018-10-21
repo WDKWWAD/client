@@ -13,6 +13,7 @@ export default new Router({
       path: "/map",
       name: "map",
       component: MapView,
+      redirect: "/map/2d",
       children: [
         {
           path: "2d",
