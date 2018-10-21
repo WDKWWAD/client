@@ -51,7 +51,6 @@ export default class MapView extends Vue {
   }
 
   get canStart(): boolean {
-    console.log(this.pointManager.currentPoints.length >= 2);
     return this.pointManager.currentPoints.length >= 2;
   }
 }

@@ -81,22 +81,7 @@ export default class MapViewer extends Vue {
   total_distance: any;
   hypsometric_profile: any;
 
-  @Watch('points', { immediate: true, deep: true })
-  onPointsChanged() : void {
-    this.drawPoints();
-  }
-
   public mounted() {
-    // this.pathPoints = { "points": [ { "x": 500,  "y": 500 }, { "x": 1600,  "y": 1950 }, { "x": 500,  "y": 1000 }]};
-    // this.$http.post('http://localhost:5000/api/path', this.pathPoints).then((response : any) => {
-    //   this.total_distance = response.body['total_distance'];
-    //   this.hypsometric_profile = response.body['hypsometric_profile'];
-    //   this.roverPath = response.body['path'];
-    //   this.updateTerrain();
-    // }, response => {
-    //     // error callback
-    // });
-
     this.$nextTick(function() {
       this.init();
       this.animate();

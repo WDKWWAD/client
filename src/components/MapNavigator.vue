@@ -21,12 +21,6 @@ export default class MapNavigator extends Vue {
   private isPressed = false;
   private navCanvas: any;
 
-  @Watch('points', { immediate: true, deep: true })
-  onPointsChanged() : void {
-    this.drawPoints();
-  }
-
-
   public mounted() {
     this.$nextTick(function() {
       console.log(this.points);

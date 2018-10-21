@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <HeightPlot />
-  </div>
+  <HeightPlot />
 </template>
 
 <script lang="ts">
