@@ -58,7 +58,7 @@ export default class MapViewer extends Vue {
   scl = this.scale * this.scaleAdjust;
 
   placards: any;
-  placardYPosition = 0; //350
+  placardYPosition = 0;
 
   color: string = "#d3d3d3";
 
