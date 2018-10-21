@@ -9,10 +9,26 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
+export class Point {
+    x: number;
+    y: number;
+    z: number;
+
+    constructor(x: number, y: number, z: number) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+}
+
+
 @Component({})
 export default class LoadingScreen extends Vue {
   private tooltips: string[] = [];
   public currentTooltip: string = '';
+  public total_distance : number = 0;
+  public hypsometric_profile : number[] = [];
+  public path : Point[] = [];
 
   public mounted() : void {
     this.tooltips.push('Rover 707: What a great place!');
@@ -21,25 +37,33 @@ export default class LoadingScreen extends Vue {
     this.changeTooltip();
   }
 
-  private changeTooltip() : void {
-   // API TEST, TODO: REMOVE THIS LATER
-    this.$http.get('http://localhost:5000/api/path').then(response => {
+  private simulateMission() : void {
+    let data = { "points": [ { "x": 500,  "y": 500 }, { "x": 1800,  "y": 2000 }]};
 
-        // get body data
-        console.log(response.data);
+    this.$http.post('http://localhost:5000/api/path', data).then((response : any) => {
+    this.total_distance = response.body['total_distance'];
+    this.hypsometric_profile = response.body['hypsometric_profile'];
+    this.path = response.body['path'];
+
+
+    console.log(this.total_distance );
+    console.log(this.hypsometric_profile[0]);
+    console.log(this.path[0].x, this.path[0].y, this.path[0].z);
 
     }, response => {
         // error callback
     });
+  }
 
-
+  private changeTooltip() : void {
+    this.simulateMission();
     let nextTooltipIndex = this.tooltips.indexOf(this.currentTooltip) + 1;
     if ( nextTooltipIndex == 0) {
       this.currentTooltip = this.tooltips[0];
     } else {
       this.currentTooltip = this.tooltips[nextTooltipIndex < this.tooltips.length ? nextTooltipIndex : 0];
     }
-    setTimeout(this.changeTooltip, 5000);
+    setTimeout(this.changeTooltip, 20000);
   }
 }
 </script>
