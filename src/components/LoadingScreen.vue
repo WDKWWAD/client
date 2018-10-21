@@ -19,6 +19,11 @@ export default class LoadingScreen extends Vue {
     this.tooltips.push('Rover 707: What a great place!');
     this.tooltips.push('Rover 707: I think I am alone there...');
     this.tooltips.push('Rover 707: Moon again? I wish I was exploring Bennu.');
+    this.tooltips.push('Rover 707: Water, where are you?');
+    this.tooltips.push('Rover 707: Wow, that\'s such a hight mountain!');
+    this.tooltips.push('Rover 707: Does anyone hear me?');
+    this.tooltips.push('Rover 707: Okay, almost there!');
+    this.tooltips.push('Rover 707: I wonder why my battery is draining so fast...');
     this.changeTooltip();
   }
 
