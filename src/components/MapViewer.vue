@@ -77,11 +77,6 @@ export default class MapViewer extends Vue {
   controls: any;
   geometry: any;
 
-  // @Watch('points', { immediate: true, deep: true })
-  // onPointsChanged() : void {
-  //   this.drawPoints();
-  // }
-
   public mounted() {
     this.$nextTick(function() {
       this.init();
@@ -223,9 +218,9 @@ export default class MapViewer extends Vue {
       this.roverPath.forEach((point: any) => {
         geometry.vertices.push(
           new Vector3(
-            this.vertices[(point.x * 2048 + point.y) * 3],
-            this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
-            this.vertices[(point.x * 2048 + point.y) * 3 + 2]
+            this.vertices[(point.y * 2048 + point.x) * 3],
+            this.vertices[(point.y * 2048 + point.x) * 3 + 1] + this.PATH_SPACE,
+            this.vertices[(point.y * 2048 + point.x) * 3 + 2]
           )
         );
       });
@@ -236,15 +231,17 @@ export default class MapViewer extends Vue {
   }
 
   private drawPoints(): void {
+    console.log('this.points:', this.points);
     if (this.points) {
       this.points.forEach((point: Point) => {
-        const geometry = new SphereGeometry(5, 32, 32);
+        console.log('point:', point);
+        const geometry = new SphereGeometry(50, 32, 32);
         const material = new MeshBasicMaterial({ color: 0x0000ff });
         const sphere = new Mesh(geometry, material);
         sphere.position.set(
-          this.vertices[(point.x * 2048 + point.y) * 3],
-          this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
-          this.vertices[(point.x * 2048 + point.y) * 3 + 2]
+          this.vertices[(point.y * 2048 + point.x) * 3],
+          this.vertices[(point.y * 2048 + point.x) * 3 + 1] + this.PATH_SPACE,
+          this.vertices[(point.y * 2048 + point.x) * 3 + 2]
         );
         this.scene.add(sphere);
       });
