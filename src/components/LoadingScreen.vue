@@ -10,15 +10,15 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 export class Point {
-    x: number;
-    y: number;
-    z: number;
+  x: number;
+  y: number;
+  z: number;
 
-    constructor(x: number, y: number, z: number) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
+  constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
 }
 
 
@@ -39,17 +39,10 @@ export default class LoadingScreen extends Vue {
 
   private simulateMission() : void {
     let data = { "points": [ { "x": 500,  "y": 500 }, { "x": 1800,  "y": 2000 }]};
-
     this.$http.post('http://localhost:5000/api/path', data).then((response : any) => {
-    this.total_distance = response.body['total_distance'];
-    this.hypsometric_profile = response.body['hypsometric_profile'];
-    this.path = response.body['path'];
-
-
-    console.log(this.total_distance );
-    console.log(this.hypsometric_profile[0]);
-    console.log(this.path[0].x, this.path[0].y, this.path[0].z);
-
+      this.total_distance = response.body['total_distance'];
+      this.hypsometric_profile = response.body['hypsometric_profile'];
+      this.path = response.body['path'];
     }, response => {
         // error callback
     });

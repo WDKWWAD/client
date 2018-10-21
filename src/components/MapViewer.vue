@@ -15,12 +15,17 @@ import {
   MeshLambertMaterial,
   AmbientLight,
   SpotLight,
+  LineBasicMaterial,
+  Geometry,
+  Vector3,
+  Line, SphereGeometry, MeshBasicMaterial
 } from "three";
 
 import { OrbitControls } from "@avatsaev/three-orbitcontrols-ts";
 
 @Component
 export default class MapViewer extends Vue {
+  PATH_SPACE = 5;
   path: string = "../assets/example_map.png";
 
   heightmapCanvas: any;
@@ -63,7 +68,23 @@ export default class MapViewer extends Vue {
   controls: any;
   geometry: any;
 
+  total_distance: any;
+  hypsometric_profile: any;
+
+  pathPoints: { points: Array<{x: number, y: number}> } = {points: []};
+  roverPath: Array<any> = [];
+
   mounted() {
+    this.pathPoints = { "points": [ { "x": 500,  "y": 500 }, { "x": 1600,  "y": 1950 }, { "x": 500,  "y": 1000 }]};
+    this.$http.post('http://localhost:5000/api/path', this.pathPoints).then((response : any) => {
+      this.total_distance = response.body['total_distance'];
+      this.hypsometric_profile = response.body['hypsometric_profile'];
+      this.roverPath = response.body['path'];
+      this.updateTerrain();
+    }, response => {
+        // error callback
+    });
+
     this.$nextTick(function() {
       this.init();
       this.animate();
@@ -199,6 +220,33 @@ export default class MapViewer extends Vue {
     this.heightMesh.geometry.computeVertexNormals();
 
     this.scene.add(this.heightMesh);
+
+    // Draw rover path
+    var material = new LineBasicMaterial({color: 0x0000ff});
+    var geometry = new Geometry();
+    this.roverPath.forEach((point: any) => {
+      geometry.vertices.push(
+        new Vector3(
+          this.vertices[(point.x * 2048 + point.y) * 3],
+          this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
+          this.vertices[(point.x * 2048 + point.y) * 3 + 2]
+        )
+      );
+    });
+    var line = new Line(geometry, material);
+    this.scene.add(line);
+
+    // Draw all points
+    this.pathPoints.points.forEach((point: {x: number, y: number}) => {
+      var geometry = new SphereGeometry(5, 32, 32 );
+      var material = new MeshBasicMaterial({color: 0x0000ff});
+      var sphere = new Mesh(geometry, material);
+      sphere.position.set(
+        this.vertices[(point.x * 2048 + point.y) * 3],
+        this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
+        this.vertices[(point.x * 2048 + point.y) * 3 + 2]);
+      this.scene.add(sphere);
+    });
   }
 
   private onWindowResize() {
