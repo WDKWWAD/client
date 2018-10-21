@@ -15,7 +15,7 @@ export default class HeightPlot extends Vue {
   y: Array<number> = [];
 
   width: number = 400;
-  height: number = 100;
+  height: number = 200;
 
   public mounted(): void {
     this.init();
@@ -42,13 +42,6 @@ export default class HeightPlot extends Vue {
     // More about styling:
     // https://plot.ly/javascript/setting-graph-size/#adjusting-height-width-and-margins
     var layout = {
-      xaxis: {
-        title: 'Time [s]',
-      titlefont: {
-        family: 'Comfortaa',
-        size: 10,
-        color: '#fff', //TODO: Margin problem
-      }},
       yaxis: {
         title: 'Elevation [m]',
       titlefont: {
