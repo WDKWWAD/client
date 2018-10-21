@@ -2,7 +2,7 @@
   <div class="map-view__box">
     <!-- <LoadingScreen/> -->
     <router-view @addPoint="addPoint" :points="pointManager.currentPoints"></router-view>
-    <PlanJourney canStart="true"/>
+    <PlanJourney :canStart="canStart"/>
     <SwitchButton/>
   </div>
 </template>
@@ -29,6 +29,11 @@ export default class MapView extends Vue {
 
   public addPoint(point: Point): void {
     this.pointManager.addNewPoint(point);
+  }
+
+  get canStart(): boolean {
+    console.log(this.pointManager.currentPoints.length >= 2);
+    return this.pointManager.currentPoints.length >= 2;
   }
 }
 </script>

@@ -42,11 +42,11 @@ export default class MapNavigator extends Vue {
           this.canvasSize.width,
           this.canvasSize.height
         );
+        this.drawPoints();
       };
-
       this.addMouseListeners();
       console.log("MapNavigator mounted: ", this.$refs);
-      this.drawPoints();
+      
     });
   }
 

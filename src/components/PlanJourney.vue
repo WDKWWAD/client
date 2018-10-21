@@ -3,7 +3,7 @@
     <div class="popup__background">
       <button @click="togglePanel" class="popup__expand"></button>
     </div>
-    <div :class="{'active': canStart == 'true'}" class="popup__action--collapsed">
+    <div :class="{'active': canStart == true}" class="popup__action--collapsed">
       <button class="start-icon"></button>
     </div>
     <div class="popup__content">
@@ -15,7 +15,7 @@
       <img class="popup__img" src="../assets/planning-icon.svg" />
       <h4 class="popup__tooltip">To plan your rover road try clicking on the Moon 2D map. You can add multiple points on the map.</h4>
       <button
-        :class="{'active': canStart == 'true'}"
+        :class="{'active': canStart == true}"
         class="popup__action">
         Start mission
       </button>
