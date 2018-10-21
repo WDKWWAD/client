@@ -64,7 +64,7 @@ export default class Stats extends Vue {
     background-color: rgba(#000, 0.8);
     border-radius: 10px;
     color: $color-on-dark;
-    width: 25em;
+    width: 27em;
     padding: 1em 0.5em;
     margin: 1em;
     h1 {
@@ -84,8 +84,13 @@ export default class Stats extends Vue {
     text-align: center;
 
     &-button {
+      @include font-bold;
+      padding: 1em 2em;
+      background-color: $color-secondary;
       border: 0;
-      
+      border-radius: 10px;
+      outline: 0;
+      cursor: pointer;
     }
   }
 }

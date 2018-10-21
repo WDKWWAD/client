@@ -42,9 +42,14 @@ export default class HeightPlot extends Vue {
       margin: {
         l: 30,
         r: 0,
-        b: 20,
+        b: 40,
         t: 20,
-        pad: 4
+        pad: 2
+      },
+      font: {
+        family: 'Comfortaa',
+        size: 14,
+        color: '#fff'
       },
       showlegend: false
     };
@@ -53,5 +58,10 @@ export default class HeightPlot extends Vue {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+@import '../styles/mixins';
+
+.main-svg {
+  background: transparent !important;
+}
 </style>
