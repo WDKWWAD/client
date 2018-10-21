@@ -40,7 +40,7 @@ export default class MapView extends Vue {
       this.pointManager.resetPoints();
       const responseBody = {
         totalDistance: response.body['total_distance'],
-        hysometricProfile: response.body['hypsometric_profile'],
+        hypsometricProfile: response.body['hypsometric_profile'],
         path: response.body['path']
       }
       this.$router.push({name: 'statistics', params: responseBody})

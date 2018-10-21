@@ -1,14 +1,14 @@
 <template>
   <div class="stats__box">
-    <MapViewer :roverPath="responseBody.path" :hysometricProfile="responseBody.hysometric_profile" :totalDistance="responseBody.total_distance" />
+    <MapViewer :roverPath="responseBody.path" />
     <div class="stats__content">
       <div class="stats__card">
         <h1>Estimates</h1>
-        <h2>Super extra estimate</h2>
+        <h2>Total Distance: {{ (responseBody.totalDistance / 1000).toFixed(2) + ' km' || 'Loading...' }}</h2>
       </div>
       <div class="stats__card">
-        <h1>Height Chart</h1>
-        <HeightPlot />
+        <h1>Hypsometric Profile</h1>
+        <HeightPlot :hypsometricProfile="responseBody.hypsometricProfile" />
       </div>
     </div>
     <div class="stats__action">

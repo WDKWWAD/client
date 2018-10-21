@@ -3,12 +3,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import {Component, Prop, Vue} from 'vue-property-decorator';
 import * as Plotly from 'plotly.js';
 
 
 @Component
 export default class HeightPlot extends Vue {
+  @Prop() hypsometricProfile ?: Array<number>;
+
   x: Array<number> = [];
   y: Array<number> = [];
 
@@ -21,8 +23,11 @@ export default class HeightPlot extends Vue {
   }
 
   private init(): void {
-    this.x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-    this.y = [10, 15, 13, 17, 10, 15, 13, 17, 10, 15, 13, 17, 10, 15, 13, 17];
+    window.console.log(this.hypsometricProfile);
+    if (this.hypsometricProfile) {
+      this.x = Array.from(this.hypsometricProfile.keys());
+      this.y = this.hypsometricProfile;
+    }
   }
 
   public draw(): void {
@@ -40,10 +45,10 @@ export default class HeightPlot extends Vue {
       width: this.width,
       height: this.height,
       margin: {
-        l: 30,
+        l: 50,
         r: 0,
-        b: 40,
-        t: 20,
+        b: 30,
+        t: 0,
         pad: 2
       },
       font: {

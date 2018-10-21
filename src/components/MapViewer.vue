@@ -30,7 +30,6 @@ import Point from "@/model/Point.model";
 export default class MapViewer extends Vue {
   @Prop() public points!: Point[];
   @Prop() private roverPath?: Point[];
-  @Prop() private hysometricProfile?: Array<number>[];
   @Prop() private totalDistance?: number;
 
   PATH_SPACE = 5;
