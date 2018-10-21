@@ -235,13 +235,13 @@ export default class MapViewer extends Vue {
     if (this.points) {
       this.points.forEach((point: Point) => {
         console.log('point:', point);
-        const geometry = new SphereGeometry(50, 32, 32);
+        const geometry = new SphereGeometry(6, 32, 32);
         const material = new MeshBasicMaterial({ color: 0x0000ff });
         const sphere = new Mesh(geometry, material);
         sphere.position.set(
-          this.vertices[(point.y * 2048 + point.x) * 3],
-          this.vertices[(point.y * 2048 + point.x) * 3 + 1] + this.PATH_SPACE,
-          this.vertices[(point.y * 2048 + point.x) * 3 + 2]
+          this.vertices[(Math.ceil(point.y) * 2048 + Math.ceil(point.x)) * 3],
+          this.vertices[(Math.ceil(point.y) * 2048 + Math.ceil(point.x)) * 3 + 1] + this.PATH_SPACE,
+          this.vertices[(Math.ceil(point.y) * 2048 + Math.ceil(point.x)) * 3 + 2]
         );
         this.scene.add(sphere);
       });
