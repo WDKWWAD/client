@@ -1,7 +1,5 @@
 <template>
-    <div>
-      <p>Map Viewer</p>
-    </div>
+    <div></div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
@@ -13,8 +11,10 @@ import {
   AxesHelper,
   PlaneBufferGeometry,
   Matrix4,
-  MeshNormalMaterial,
-  Mesh, MeshDepthMaterial, MeshLambertMaterial, AmbientLight, SpotLight,
+  Mesh,
+  MeshLambertMaterial,
+  AmbientLight,
+  SpotLight,
 } from "three";
 
 import { OrbitControls } from "@avatsaev/three-orbitcontrols-ts";
@@ -111,9 +111,9 @@ export default class MapViewer extends Vue {
     this.scene.add(ambientLight);
 
     var spotLight = new SpotLight(0xaaaaaa);
-    spotLight.position.set(0, 1000, 0);
+    spotLight.position.set(0, 700, 0);
     spotLight.angle = Math.PI / 2;
-    spotLight.intensity = 0.7;
+    spotLight.intensity = 0.6;
     spotLight.castShadow = true;
     this.scene.add(spotLight);
 
@@ -139,7 +139,7 @@ export default class MapViewer extends Vue {
     this.geometry3D.applyMatrix(new Matrix4().makeRotationX(-0.5 * Math.PI));
     this.vertices = this.geometry3D.attributes.position.array;
 
-    this.material3D = new MeshLambertMaterial({ side: 2, color: 0x555555 });
+    this.material3D = new MeshLambertMaterial({ side: 2, color: 0x777777 });
     this.heightMesh = new Mesh(this.geometry3D.clone(), this.material3D);
 
     this.tile = document.createElement("img");
