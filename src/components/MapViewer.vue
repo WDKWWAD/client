@@ -1,5 +1,7 @@
 <template>
-    <p>Test</p>
+    <div>
+      <p>Map Viewer</p>
+    </div>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
@@ -21,21 +23,17 @@ import {
   Geometry,
   Line,
   Texture,
-  Vector3
+  Vector3,
+  Color
 } from "three";
 
-import { OrbitControls } from 'three-orbitcontrols-ts';
+import { OrbitControls } from "@avatsaev/three-orbitcontrols-ts";
 
 @Component
 export default class MapViewer extends Vue {
-  path: string = "http://jaanga.github.io/";
+  path: string = "../assets/example_map.png";
   gazetteerFile = this.path + "moon/gazetteer/moon-iau-nomenclature.csv";
   gazetteer: any;
-
-  dirNE = "moon-heightmaps-256p-ne/";
-  dirNW = "moon-heightmaps-256p-nw/";
-  dirSE = "moon-heightmaps-256p-se/";
-  dirSW = "moon-heightmaps-256p-sw/";
 
   heightmapCanvas: any;
   heightmapContext: any;
@@ -49,30 +47,32 @@ export default class MapViewer extends Vue {
 
   heightMesh: any;
 
-  heightmapWidth = 1024;
-  heightmapHeight = 1024;
+  heightmapWidth = 2048;
+  heightmapHeight = 2048;
 
-  widthDestination = 256;
-  heightDestination = 256;
+  widthDestination = this.heightmapWidth;
+  heightDestination = this.heightmapHeight;
 
-  scale = 1;
+  scale = 0.1;
   scaleAdjust = 0.065;
   scl = this.scale * this.scaleAdjust;
 
   placards: any;
-  placardYPosition = 350;
+  placardYPosition = 0; //350
+
+  color: string = "#d3d3d3";
 
   // Copernicus,Archetypal large complex crater,9.7N,20.1W
   selectedPlace = 1753; // Copernicus
 
-  tileXCount = this.heightmapWidth / this.widthDestination;
-  tileYCount = this.heightmapWidth / this.widthDestination;
+  tileXCount = 1; //this.heightmapWidth / this.widthDestination;
+  tileYCount = 1; //this.heightmapWidth / this.widthDestination;
 
-  tileXStart = -22;
+  tileXStart = 0;
   tileXFinish = this.tileXStart + this.tileXCount;
   tileX = this.tileXStart;
 
-  tileYStart = 8;
+  tileYStart = 0;
   tileYFinish = this.tileYStart + this.tileYCount;
   tileY = this.tileYStart;
 
@@ -96,9 +96,6 @@ export default class MapViewer extends Vue {
   // checkbox on UI
   chkRotate: any;
 
-  // info
-  info: any;
-
   mounted() {
     this.$nextTick(function() {
       this.init();
@@ -116,40 +113,6 @@ export default class MapViewer extends Vue {
       "input[type=range] { -webkit-appearance: none; -moz-appearance: none; background-color: silver; height: 20px; width: 180px; } " +
       "input[type=range]::-moz-range-thumb { -moz-appearance: none; background-color: #888; width: 10px; } " +
       "input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; background-color: #888; opacity: 0.5; height: 28px; width: 10px; } " +
-      "";
-
-    this.hamburger = document.body.appendChild(document.createElement("div"));
-    this.hamburger.style.cssText =
-      " left: 320px; position: absolute; top: 20px; transition: left 1s; ";
-    this.hamburger.innerHTML =
-      "<a id=bars href=JavaScript:slideHamburger(); >&#9776;</a>";
-
-    let menu = this.hamburger.appendChild(document.createElement("div"));
-    menu.style.cssText =
-      " background-color: #eee; border: 1px #ccc solid; left: -300px;  max-height: " +
-      (window.innerHeight - 50) +
-      "px; " +
-      "opacity: 0.8; overflow: auto; padding: 0 10px; position: absolute; top: 0px; transition: left 1s; width: 260px; ";
-    menu.innerHTML =
-      '<h2 style=margin:0; ><a href="" >' +
-      document.title +
-      "</a> " +
-      "<a id=i href=http://jaanga.github.io/moon/rover-256p/ >&#x24D8;</a></h2>" +
-      "<p><select id=selPlace></select></p>" +
-      "<p>" +
-      "<button onclick=controls.reset(); >Zoom All</button> " +
-      //				'<button id=butZoomIn onclick="camera.position.set(centerX-halfMapWidth+50,heightMeshYPosition+300,centerZ-halfMapHeight+400);" >Zoom In</button>' +
-      "</p>" +
-      "<p>Heights: <input type=range min=0 max=2 step=0.05 value=1 onchange=scale=this.value;scl=scale*scaleAdjust;processTiles(); /></p>" +
-      "<p><input type=checkbox id=chkGradient onchange=toggleGradientBackground(); checked /> Display gradient</p>" +
-      "<p><input type=checkbox id=chkRotate checked /> Auto Rotation</p>" +
-      "<p><small>" +
-      "Use cursor keys to rove the moon<br>" +
-      "Roll = left | 1 finger<br>Zoom = scroll | 2 finger<br>Move = right | 3 finger" +
-      "</small></p>" +
-      "<hr>" +
-      "<div id=info ></div>" +
-      "<p id=places>downloading gazetteer...</p>" +
       "";
 
     let rendererParams: WebGLRendererParameters = {
@@ -173,6 +136,7 @@ export default class MapViewer extends Vue {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.maxDistance = 8000;
     this.controls.enableKeys = false;
+    this.controls.enableZoom = true;
 
     this.scene = new Scene();
 
@@ -205,8 +169,6 @@ export default class MapViewer extends Vue {
     this.tile.crossOrigin = "Anonymous";
 
     this.processTiles();
-
-    this.toggleGradientBackground();
   }
 
   private processTiles() {
@@ -218,15 +180,6 @@ export default class MapViewer extends Vue {
       this.processTiles();
     } else {
       this.updateTerrain();
-      this.info.innerHTML =
-        "lat: " +
-        this.tileYStart +
-        " to " +
-        this.tileYFinish +
-        " lon: " +
-        this.tileXStart +
-        " to " +
-        this.tileXFinish;
     }
   }
 
@@ -238,19 +191,24 @@ export default class MapViewer extends Vue {
         0,
         this.widthDestination,
         this.heightDestination,
-        (x - this.tileXStart) * this.widthDestination,
-        (4 - y + this.tileYStart) * this.heightDestination,
+        0,
+        0,
         this.widthDestination,
         this.heightDestination
       );
       this.processTiles();
     };
 
-    this.tile.src = this.path;
+    this.tile.src = require("../assets/example_map.png");
   }
 
   private updateTerrain(): void {
-    let map = this.heightmapContext.getImageData(0, 0, 1024, 1024).data;
+    let map = this.heightmapContext.getImageData(
+      0,
+      0,
+      this.heightmapWidth,
+      this.heightmapHeight
+    ).data;
 
     for (let i = 1, j = 0; i < this.vertices.length; i += 3, j += 4) {
       this.vertices[i] = this.scl * (map[j] + 255 * map[j + 1]) - 300;
@@ -259,100 +217,11 @@ export default class MapViewer extends Vue {
     this.heightMesh.geometry.dispose();
     this.scene.remove(this.heightMesh);
     this.heightMesh = new Mesh(this.geometry3D, this.material3D);
-    this.heightMesh.position.y = -300; //heightMeshYPosition;
 
     this.heightMesh.geometry.computeFaceNormals();
     this.heightMesh.geometry.computeVertexNormals();
 
     this.scene.add(this.heightMesh);
-
-    if (this.gazetteer === undefined) {
-      this.getGazetteerMoon();
-    } else {
-      this.checkoutPlace();
-    }
-  }
-
-  private getGazetteerMoon(): void {
-    let requestGazetteer = (fileName: string) => {
-      xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", fileName, true);
-      xmlHttp.onreadystatechange = callbackGazetteer;
-      xmlHttp.send(null);
-    };
-
-    var data = requestGazetteer(this.gazetteerFile);
-    var xmlHttp: any;
-
-    let callbackGazetteer = () => {
-      if (xmlHttp.readyState != 4) {
-        return;
-      }
-
-      var response = xmlHttp.responseText;
-
-      var lines = response.split(/\r\n|\n/);
-
-      this.gazetteer = [["select destination"]];
-
-      for (let i = 0; i < lines.length; i++) {
-        var place = lines[i].split(",");
-        this.gazetteer.push([
-          place[0],
-          parseFloat(place[1]),
-          parseFloat(place[2]),
-          parseFloat(place[3])
-        ]);
-      }
-
-      for (let i = 0; i < lines.length; i++) {
-        this.selPlace.appendChild(document.createElement("option"));
-        this.selPlace.children[i].text = this.gazetteer[i][0];
-      }
-
-      this.selPlace.selectedIndex = this.selectedPlace;
-      this.selPlace.onchange = () => {
-        var place = this.gazetteer[this.selPlace.selectedIndex];
-        this.tileXStart = Math.floor(parseFloat(place[3])) - 1;
-        this.tileYStart = Math.floor(parseFloat(place[2])) - 1;
-
-        this.tileXFinish = this.tileXStart + this.tileXCount;
-        this.tileX = this.tileXStart;
-
-        this.tileYFinish = this.tileYStart + this.tileYCount;
-        this.tileY = this.tileYStart;
-        this.processTiles();
-      };
-
-      this.checkoutPlace();
-    };
-  }
-
-  private checkoutPlace(): void {
-    var txt = "";
-    this.scene.remove(this.placards);
-    this.placards = new Object3D();
-    for (let i = 0; i < this.gazetteer.length; i++) {
-      let place = this.gazetteer[i];
-      if (
-        place[2] > this.tileYStart + 1 &&
-        place[2] < this.tileYFinish + 1 &&
-        place[3] > this.tileXStart &&
-        place[3] < this.tileXFinish
-      ) {
-        txt +=
-          place[0] + "<br>&bull; lat:" + place[2] + " lon:" + place[3] + "<br>";
-        this.drawSprite(
-          place[0],
-          0.25,
-          120,
-          256 * (place[3] - this.tileX + 2),
-          this.placardYPosition,
-          -256 * (place[2] - this.tileY - 3)
-        );
-      }
-    }
-    this.scene.add(this.placards);
   }
 
   // draw placards
@@ -440,42 +309,6 @@ export default class MapViewer extends Vue {
     }
   }
 
-  private slideHamburger() {
-    this.hamburger.style.left =
-      this.hamburger.style.left === "320px" ? 0 : "320px";
-  }
-
-  private toggleGradientBackground() {
-    if (this.chkGradient && this.chkGradient.checked) {
-      document.body.style.cssText += " height: " + window.innerHeight + "px; ";
-      var col1 = Math.random()
-        .toString(16)
-        .slice(2, 8);
-      var col2 = Math.random()
-        .toString(16)
-        .slice(2, 8);
-      var col3 = Math.random()
-        .toString(16)
-        .slice(2, 8);
-      var x = (Math.random() * window.innerWidth).toFixed(0);
-      var y = (Math.random() * window.innerHeight).toFixed(0);
-      document.body.style.backgroundImage =
-        "radial-gradient( circle farthest-corner at " +
-        x +
-        "px " +
-        y +
-        "px, #" +
-        col1 +
-        " 0%, #" +
-        col2 +
-        " 50%, #" +
-        col3 +
-        " 100%)";
-    } else {
-      document.body.style.backgroundImage = "";
-    }
-  }
-
   private onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
@@ -495,8 +328,6 @@ export default class MapViewer extends Vue {
     this.controls.autoRotate = false;
 
     requestAnimationFrame(this.animate);
-    //this.controls.update();
-    //this.stats.update();
     this.renderer.render(this.scene, this.camera);
   }
 }
