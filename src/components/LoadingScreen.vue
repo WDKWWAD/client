@@ -63,7 +63,7 @@ export default class LoadingScreen extends Vue {
     } else {
       this.currentTooltip = this.tooltips[nextTooltipIndex < this.tooltips.length ? nextTooltipIndex : 0];
     }
-    setTimeout(this.changeTooltip, 20000);
+    setTimeout(this.changeTooltip, 5000);
   }
 }
 </script>
