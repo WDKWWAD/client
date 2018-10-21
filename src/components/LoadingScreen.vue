@@ -8,19 +8,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-
-export class Point {
-  x: number;
-  y: number;
-  z: number;
-
-  constructor(x: number, y: number, z: number) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-}
-
+import Point from '@/model/Point.model';
 
 @Component({})
 export default class LoadingScreen extends Vue {
@@ -43,7 +31,7 @@ export default class LoadingScreen extends Vue {
       this.total_distance = response.body['total_distance'];
       this.hypsometric_profile = response.body['hypsometric_profile'];
       this.path = response.body['path'];
-    }, response => {
+    }, (response: any) => {
         // error callback
     });
   }

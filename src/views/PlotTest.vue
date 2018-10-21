@@ -1,14 +1,12 @@
 <template>
   <div>
-    <div>
-      <HeightPlot />
-    </div>
+    <HeightPlot />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HeightPlot from '@/components/HeightPlot.vue'; // @ is an alias to /src
+import HeightPlot from '@/components/HeightPlot.vue';
 
 @Component({
   components: {

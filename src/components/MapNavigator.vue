@@ -32,9 +32,7 @@ export default class MapNavigator extends Vue {
       this.navCanvas.width = this.canvasSize.width;
       this.navCanvas.height = this.canvasSize.height;
       this.canvasBoundingRect = this.navCanvas.getBoundingClientRect();
-      this.canvasCtx = this.navCanvas.getContext(
-        "2d"
-      ) as CanvasRenderingContext2D;
+      this.canvasCtx = this.navCanvas.getContext('2d') as CanvasRenderingContext2D;
 
       let image = new Image();
       image.src = require("../assets/example_map.png");
@@ -57,8 +55,8 @@ export default class MapNavigator extends Vue {
 
       this.navCanvas.onmouseup = (mouseEvent: MouseEvent) => {
         if (this.isPressed) {
-          const mouseX = mouseEvent.clientX;
-          const mouseY = mouseEvent.clientY;
+          const mouseX = mouseEvent.offsetX;
+          const mouseY = mouseEvent.offsetY;
 
           console.log(mouseX, mouseY);
 
@@ -80,7 +78,7 @@ export default class MapNavigator extends Vue {
       this.canvasCtx.fillRect(element.x, element.y, 10, 10);
 
       const fontSize = 14;
-      this.canvasCtx.font = `${fontSize}px Arial`;
+      this.canvasCtx.font = `${fontSize}px Comfortaa`;
       this.canvasCtx.textAlign = "center";
       this.canvasCtx.fillText(
         (this.points.indexOf(element) + 1).toString(),

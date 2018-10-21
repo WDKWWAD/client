@@ -1,15 +1,17 @@
 <template>
   <div class="switch__box">
-    <button class="switch__button">Switch to {{viewToSwitch}} preview</button>
+    <router-link :to="{ name: this.$route.name === '2d' ? '3d' : '2d'}" class="switch__button">Switch to {{this.nextView()}} preview</router-link>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 
 @Component
 export default class SwitchButton extends Vue {
-  @Prop() private viewToSwitch: string = '3D';
+  public nextView() : string {
+    return this.$route.name === '2d' ? '3d' : '2d';
+  }
 }
 </script>
 
@@ -32,6 +34,7 @@ export default class SwitchButton extends Vue {
     color: $color-on-light;
     border: 0;
     border-radius: 10px;
+    text-decoration: none;
     text-transform: uppercase;
     cursor: pointer;
   }

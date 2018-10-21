@@ -1,5 +1,5 @@
 <template>
-    <div></div>
+    <div id="mapViewer"></div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
@@ -38,8 +38,8 @@ export default class MapViewer extends Vue {
 
   heightMesh: any;
 
-  heightmapWidth = 2048;
-  heightmapHeight = 2048;
+  heightmapWidth = 1024;
+  heightmapHeight = 1024;
 
   widthDestination = this.heightmapWidth;
   heightDestination = this.heightmapHeight;
@@ -74,16 +74,16 @@ export default class MapViewer extends Vue {
   pathPoints: { points: Array<{x: number, y: number}> } = {points: []};
   roverPath: Array<any> = [];
 
-  mounted() {
-    this.pathPoints = { "points": [ { "x": 500,  "y": 500 }, { "x": 1600,  "y": 1950 }, { "x": 500,  "y": 1000 }]};
-    this.$http.post('http://localhost:5000/api/path', this.pathPoints).then((response : any) => {
-      this.total_distance = response.body['total_distance'];
-      this.hypsometric_profile = response.body['hypsometric_profile'];
-      this.roverPath = response.body['path'];
-      this.updateTerrain();
-    }, response => {
-        // error callback
-    });
+  public mounted() {
+    // this.pathPoints = { "points": [ { "x": 500,  "y": 500 }, { "x": 1600,  "y": 1950 }, { "x": 500,  "y": 1000 }]};
+    // this.$http.post('http://localhost:5000/api/path', this.pathPoints).then((response : any) => {
+    //   this.total_distance = response.body['total_distance'];
+    //   this.hypsometric_profile = response.body['hypsometric_profile'];
+    //   this.roverPath = response.body['path'];
+    //   this.updateTerrain();
+    // }, response => {
+    //     // error callback
+    // });
 
     this.$nextTick(function() {
       this.init();
@@ -92,17 +92,6 @@ export default class MapViewer extends Vue {
   }
 
   private init(): void {
-    var css = document.body.appendChild(document.createElement("style"));
-    css.innerHTML =
-      "body { font: 12pt monospace; margin: 0; overflow: hidden; }" +
-      "h2 { margin: 0; }" +
-      "#bars, #i { font-size: 24pt; text-decoration: none; }" +
-      "#bars { color: pink; } " +
-      "input[type=range] { -webkit-appearance: none; -moz-appearance: none; background-color: silver; height: 20px; width: 180px; } " +
-      "input[type=range]::-moz-range-thumb { -moz-appearance: none; background-color: #888; width: 10px; } " +
-      "input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; background-color: #888; opacity: 0.5; height: 28px; width: 10px; } " +
-      "";
-
     let rendererParams: WebGLRendererParameters = {
       alpha: true,
       antialias: true,
@@ -111,7 +100,8 @@ export default class MapViewer extends Vue {
 
     this.renderer = new WebGLRenderer(rendererParams);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(this.renderer.domElement);
+    const divRenderer: any = document.getElementById('mapViewer');
+    divRenderer.appendChild(this.renderer.domElement);
 
     this.camera = new PerspectiveCamera(
       40,
@@ -145,8 +135,6 @@ export default class MapViewer extends Vue {
     this.scene.add(axisHelper);
 
     this.heightmapCanvas = document.createElement("canvas");
-    //		document.body.appendChild( heightmapCanvas );
-    //		heightmapCanvas.style.cssText = 'border: 5px red solid; position: absolute; top: 0; z-index: -50;';
     this.heightmapCanvas.width = this.heightmapWidth;
     this.heightmapCanvas.height = this.heightmapHeight;
     this.heightmapContext = this.heightmapCanvas.getContext("2d");

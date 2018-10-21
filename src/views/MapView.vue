@@ -1,8 +1,9 @@
 <template>
   <div class="map-view__box">
-    <LoadingScreen/>
+    <!-- <LoadingScreen/> -->
+    <router-view></router-view>
     <PlanJourney canStart="true"/>
-    <SwitchButton viewToSwitch="3D" />
+    <SwitchButton/>
   </div>
 </template>
 
@@ -10,16 +11,18 @@
 import { Component, Vue } from 'vue-property-decorator';
 import PlanJourney from '@/components/PlanJourney.vue';
 import LoadingScreen from '@/components/LoadingScreen.vue';
+import MapNavigator from '@/components/MapNavigator.vue';
 import SwitchButton from '@/components/SwitchButton.vue';
 
 @Component({
   components: {
     PlanJourney,
     SwitchButton,
-    LoadingScreen
+    LoadingScreen,
+    MapNavigator
   },
 })
-export default class Home extends Vue {}
+export default class MapView extends Vue {}
 </script>
 
 <style scoped lang="scss">
