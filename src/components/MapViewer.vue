@@ -2,7 +2,7 @@
   <div id="mapViewer" class="map-view__box"></div>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import {
   WebGLRenderer,
   PerspectiveCamera,
@@ -29,7 +29,7 @@ import Point from "@/model/Point.model";
 @Component
 export default class MapViewer extends Vue {
   @Prop()
-  private points!: Point[];
+  public points!: Point[];
   @Prop()
   private roverPath?: Point[];
 
@@ -80,6 +80,11 @@ export default class MapViewer extends Vue {
 
   total_distance: any;
   hypsometric_profile: any;
+
+  @Watch('points', { immediate: true, deep: true })
+  onPointsChanged() : void {
+    this.drawPoints();
+  }
 
   public mounted() {
     // this.pathPoints = { "points": [ { "x": 500,  "y": 500 }, { "x": 1600,  "y": 1950 }, { "x": 500,  "y": 1000 }]};
@@ -285,7 +290,7 @@ export default class MapViewer extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "../styles/mixins";
+@import '../styles/mixins';
 
 .map-view {
   &__box {

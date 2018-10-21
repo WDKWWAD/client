@@ -20,6 +20,11 @@
         class="popup__action">
         Start mission
       </button>
+      <button
+        @click="$emit('reset')"
+        class="popup__reset">
+        Reset points
+      </button>
     </div>
   </div>
 </template>

@@ -10,4 +10,8 @@ export default class PointManager {
   public addNewPoint(point: Point): void {
     this.currentPoints.push(point);
   }
+
+  public resetPoints(): void {
+    this.currentPoints = [];
+  }
 }

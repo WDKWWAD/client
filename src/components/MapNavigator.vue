@@ -5,12 +5,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import Point from '@/model/Point.model';
 
 @Component
 export default class MapNavigator extends Vue {
-  @Prop() private points!: { x: number; y: number }[];
+  @Prop() private points!: Point[];
 
   private canvasSize = {
     width: 750,
@@ -20,6 +20,12 @@ export default class MapNavigator extends Vue {
   private canvasCtx: any;
   private isPressed = false;
   private navCanvas: any;
+
+  @Watch('points', { immediate: true, deep: true })
+  onPointsChanged() : void {
+    this.drawPoints();
+  }
+
 
   public mounted() {
     this.$nextTick(function() {

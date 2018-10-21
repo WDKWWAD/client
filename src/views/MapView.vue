@@ -1,7 +1,7 @@
 <template>
   <div class="map-view__box">
     <router-view @addPoint="addPoint" :points="pointManager.currentPoints"></router-view>
-    <PlanJourney :canStart="canStart" @startMission="startMission"/>
+    <PlanJourney :canStart="canStart" @startMission="startMission" @reset="resetPoints"/>
     <SwitchButton/>
   </div>
 </template>
@@ -30,9 +30,14 @@ export default class MapView extends Vue {
     this.pointManager.addNewPoint(point);
   }
 
+  public resetPoints(): void {
+    this.pointManager.resetPoints();
+  }
+
   public startMission(): void {
     this.$router.push({name: 'loading'});
     this.$http.post('http://localhost:5000/api/path', this.pointManager.currentPoints).then((response : any) => {
+      this.pointManager.resetPoints();
       const responseBody = {
         totalDistance: response.body['total_distance'],
         hysometricProfile: response.body['hypsometric_profile'],
