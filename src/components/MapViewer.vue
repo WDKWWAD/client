@@ -1,5 +1,5 @@
 <template>
-  <div id="mapViewer"></div>
+  <div id="mapViewer" class="map-view__box"></div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
@@ -27,7 +27,7 @@ import Point from '@/model/Point.model';
 @Component
 export default class MapViewer extends Vue {
   @Prop() private points!: Point[];
-  @Prop() private roverPath?: Point[] = [];
+  @Prop() private roverPath?: Point[];
   
   PATH_SPACE = 5;
   path: string = "../assets/map.png";
@@ -238,16 +238,18 @@ export default class MapViewer extends Vue {
   }
 
   private drawPoints(): void {
-    this.points.forEach((point: Point) => {
-      const geometry = new SphereGeometry(5, 32, 32 );
-      const material = new MeshBasicMaterial({color: 0x0000ff});
-      const sphere = new Mesh(geometry, material);
-      sphere.position.set(
-        this.vertices[(point.x * 2048 + point.y) * 3],
-        this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
-        this.vertices[(point.x * 2048 + point.y) * 3 + 2]);
-      this.scene.add(sphere);
-    });
+    if (this.points) {
+      this.points.forEach((point: Point) => {
+        const geometry = new SphereGeometry(5, 32, 32 );
+        const material = new MeshBasicMaterial({color: 0x0000ff});
+        const sphere = new Mesh(geometry, material);
+        sphere.position.set(
+          this.vertices[(point.x * 2048 + point.y) * 3],
+          this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
+          this.vertices[(point.x * 2048 + point.y) * 3 + 2]);
+        this.scene.add(sphere);
+      });
+    }
   }
 
   private onWindowResize() {
@@ -264,3 +266,18 @@ export default class MapViewer extends Vue {
   }
 }
 </script>
+
+<style scoped lang="scss">
+@import '../styles/mixins';
+
+.map-view {
+  &__box {
+    @include size(100vw, 100vh);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+}
+</style>

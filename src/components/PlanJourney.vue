@@ -15,6 +15,7 @@
       <img class="popup__img" src="../assets/planning-icon.svg" />
       <h4 class="popup__tooltip">To plan your rover road try clicking on the Moon 2D map. You can add multiple points on the map.</h4>
       <button
+        @click="$emit('startMission')"
         :class="{'active': canStart == true}"
         class="popup__action">
         Start mission

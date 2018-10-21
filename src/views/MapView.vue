@@ -1,6 +1,5 @@
 <template>
   <div class="map-view__box">
-    <!-- <LoadingScreen/> -->
     <router-view @addPoint="addPoint" :points="pointManager.currentPoints"></router-view>
     <PlanJourney :canStart="canStart" @startMission="startMission"/>
     <SwitchButton/>
@@ -32,6 +31,7 @@ export default class MapView extends Vue {
   }
 
   public startMission(): void {
+    this.$router.push({name: 'loading'});
     this.$http.post('http://localhost:5000/api/path', this.pointManager.currentPoints).then((response : any) => {
       const responseBody = {
         totalDistance: response.body['total_distance'],

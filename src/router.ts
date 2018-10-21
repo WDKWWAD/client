@@ -5,11 +5,16 @@ import PlotTest from "./views/PlotTest.vue";
 import Stats from "./views/Stats.vue";
 import MapNavigator from "./components/MapNavigator.vue";
 import MapViewer from "./components/MapViewer.vue";
+import LoadingScreen from "./components/LoadingScreen.vue";
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
+    {
+      path: "/",
+      redirect: "/map"
+    },
     {
       path: "/map",
       name: "map",
@@ -25,6 +30,11 @@ export default new Router({
           path: "3d",
           name: "3d",
           component: MapViewer
+        },
+        {
+          path: "loading",
+          name: "loading",
+          component: LoadingScreen
         }
       ]
     },
