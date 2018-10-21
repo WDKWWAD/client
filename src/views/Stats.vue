@@ -5,6 +5,9 @@
       <div class="stats__card">
         <h1>Estimates</h1>
         <h2>Total Distance: {{ (responseBody.totalDistance / 1000).toFixed(2) + ' km' || 'Loading...' }}</h2>
+        <h2>Total Time: {{(((responseBody.totalDistance / 1000)/8).toFixed(2)) + ' h' || 'Loading...'}}</h2>
+        <h2>Batery used: {{ batteryUsed + ' %' || 'Loading...'}}</h2>
+        <h2>Collected samples: {{ collectedSamples + ' g' || 'Loading...'}}</h2>
       </div>
       <div class="stats__card">
         <h1>Hypsometric Profile</h1>
@@ -30,6 +33,9 @@ import HeightPlot from '@/components/HeightPlot.vue';
 })
 export default class Stats extends Vue {
   public responseBody!: Object;
+
+  batteryUsed : number = Math.floor(Math.random() * 98) + 1;
+  collectedSamples : number = Math.floor(Math.random() * 23) + 1;
 
   public created(): void {
     this.responseBody = this.$route.params;
