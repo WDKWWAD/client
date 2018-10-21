@@ -1,6 +1,6 @@
 <template>
   <div class="stats__box">
-    <MapViewer :roverPath="responseBody.roverPath" />
+    <MapViewer :roverPath="responseBody.path" :hysometricProfile="responseBody.hysometric_profile" :totalDistance="responseBody.total_distance" />
     <div class="stats__content">
       <div class="stats__card">
         <h1>Estimates</h1>

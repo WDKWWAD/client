@@ -36,7 +36,7 @@ export default class MapView extends Vue {
 
   public startMission(): void {
     this.$router.push({name: 'loading'});
-    this.$http.post('http://localhost:5000/api/path', this.pointManager.currentPoints).then((response : any) => {
+    this.$http.post('http://localhost:5000/api/path', {'points': this.pointManager.currentPoints}).then((response : any) => {
       this.pointManager.resetPoints();
       const responseBody = {
         totalDistance: response.body['total_distance'],
