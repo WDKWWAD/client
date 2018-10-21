@@ -3,6 +3,7 @@ import Router from "vue-router";
 import MapView from "./views/MapView.vue";
 import PlotTest from "./views/PlotTest.vue";
 import Stats from "./views/Stats.vue";
+import LandingPage from "./views/LandingPage.vue";
 import MapNavigator from "./components/MapNavigator.vue";
 import MapViewer from "./components/MapViewer.vue";
 import LoadingScreen from "./components/LoadingScreen.vue";
@@ -13,7 +14,8 @@ export default new Router({
   routes: [
     {
       path: "/",
-      redirect: "/map"
+      name: "landing-page",
+      component: LandingPage
     },
     {
       path: "/map",
