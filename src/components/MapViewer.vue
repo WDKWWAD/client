@@ -27,7 +27,6 @@ import { OrbitControls } from "@avatsaev/three-orbitcontrols-ts";
 import Point from "@/model/Point.model";
 
 @Component
-</script>
 export default class MapViewer extends Vue {
 @Prop()
 public points!: Point[];
@@ -279,6 +278,7 @@ private hysometricProfile?: Array<number>[];
   }
   }
   }
+</script>
 
 <style scoped lang="scss">
 @import '../styles/mixins';
