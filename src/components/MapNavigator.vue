@@ -53,17 +53,17 @@ export default class MapNavigator extends Vue {
   public drawPoints(): void {
     this.points.forEach((element: Point) => {
       this.canvasCtx.beginPath();
-      this.canvasCtx.arc(element.x - 5, element.y - 5, 10, 0, 2 * Math.PI);
+      this.canvasCtx.arc(element.x * 750 / 2048 - 5, element.y * 750 / 2048 - 5, 10, 0, 2 * Math.PI);
       this.canvasCtx.fillStyle = "#fcee5b";
-      this.canvasCtx.fillRect(element.x - 5, element.y - 5, 10, 10);
+      this.canvasCtx.fillRect(element.x * 750 / 2048 - 5, element.y * 750 / 2048 - 5, 10, 10);
 
       const fontSize = 14;
       this.canvasCtx.font = `${fontSize}px Comfortaa`;
       this.canvasCtx.textAlign = "center";
       this.canvasCtx.fillText(
         (this.points.indexOf(element) + 1).toString(),
-        element.x,
-        element.y - 10
+        element.x / 2048 * 750,
+        element.y / 2048 * 750 - 10
       );
       this.canvasCtx.closePath();
     });
@@ -76,7 +76,7 @@ export default class MapNavigator extends Vue {
 
     this.navCanvas.onmouseup = (mouseEvent: MouseEvent) => {
       if (this.isPressed) {
-        const pointToAdd = new Point(mouseEvent.offsetX, mouseEvent.offsetY);
+        const pointToAdd = new Point(mouseEvent.offsetX * 2048 / 750, mouseEvent.offsetY * 2048 / 750);
         console.log(pointToAdd);
 
         this.$emit('addPoint', pointToAdd);

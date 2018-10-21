@@ -1,6 +1,6 @@
 <template>
   <div class="stats__box">
-    <MapViewer :roverPath="responseBody.path" />
+    <MapViewer :points="responseBody.points" :roverPath="responseBody.path" />
     <div class="stats__content">
       <div class="stats__card">
         <h1>Estimates</h1>
