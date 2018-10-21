@@ -1,10 +1,10 @@
 <template>
   <div :class="{collapsed: isCollapsed}" class="popup__box">
-    <div class="popup__background">
+    <div class="popup__background card-3">
       <button @click="togglePanel" class="popup__expand"></button>
     </div>
-    <div :class="{'active': canStart == true}" class="popup__action--collapsed">
-      <button class="start-icon"></button>
+    <div :class="{'active': canStart == true}" class="popup__action--collapsed card-3">
+      <button @click="$emit('startMission')" class="start-icon"></button>
     </div>
     <div class="popup__content">
       <button
