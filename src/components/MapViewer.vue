@@ -30,7 +30,7 @@ export default class MapViewer extends Vue {
   @Prop() private roverPath?: Point[] = [];
   
   PATH_SPACE = 5;
-  path: string = "../assets/example_map.png";
+  path: string = "../assets/map.png";
 
   heightmapCanvas: any;
   heightmapContext: any;
@@ -186,7 +186,7 @@ export default class MapViewer extends Vue {
       this.processTiles();
     };
 
-    this.tile.src = require("../assets/example_map.png");
+    this.tile.src = require("../assets/map.png");
   }
 
   private updateTerrain(): void {
