@@ -14,9 +14,6 @@ import Point from '@/model/Point.model';
 export default class LoadingScreen extends Vue {
   private tooltips: string[] = [];
   public currentTooltip: string = '';
-  public total_distance : number = 0;
-  public hypsometric_profile : number[] = [];
-  public path : Point[] = [];
 
   public mounted() : void {
     this.tooltips.push('Rover 707: What a great place!');
