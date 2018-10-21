@@ -31,7 +31,7 @@ export default class MapNavigator extends Vue {
       this.canvasCtx = this.navCanvas.getContext('2d') as CanvasRenderingContext2D;
 
       let image = new Image();
-      image.src = require("../assets/example_map.png");
+      image.src = require("../assets/map.png");
       image.width = this.canvasSize.width;
       image.height = this.canvasSize.height;
       image.onload = () => {
