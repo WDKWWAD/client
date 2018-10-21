@@ -22,6 +22,17 @@ export default class LoadingScreen extends Vue {
   }
 
   private changeTooltip() : void {
+   // API TEST, TODO: REMOVE THIS LATER
+    this.$http.get('http://localhost:5000/api/path').then(response => {
+
+        // get body data
+        console.log(response.data);
+
+    }, response => {
+        // error callback
+    });
+
+
     let nextTooltipIndex = this.tooltips.indexOf(this.currentTooltip) + 1;
     if ( nextTooltipIndex == 0) {
       this.currentTooltip = this.tooltips[0];
