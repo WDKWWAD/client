@@ -1,5 +1,5 @@
 <template>
-    <div id="mapViewer"></div>
+  <div id="mapViewer"></div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
@@ -27,6 +27,8 @@ import Point from '@/model/Point.model';
 @Component
 export default class MapViewer extends Vue {
   @Prop() private points!: Point[];
+  @Prop() private roverPath?: Point[] = [];
+  
   PATH_SPACE = 5;
   path: string = "../assets/example_map.png";
 
@@ -72,8 +74,6 @@ export default class MapViewer extends Vue {
 
   total_distance: any;
   hypsometric_profile: any;
-
-  roverPath: Array<any> = [];
 
   public mounted() {
     // this.pathPoints = { "points": [ { "x": 500,  "y": 500 }, { "x": 1600,  "y": 1950 }, { "x": 500,  "y": 1000 }]};
@@ -201,6 +201,13 @@ export default class MapViewer extends Vue {
       this.vertices[i] = this.scl * (map[j] + 255 * map[j + 1]) - 150;
     }
 
+    this.drawMesh();
+    this.drawPath();
+    this.drawPoints();
+    
+  }
+
+  private drawMesh(): void {
     this.heightMesh.geometry.dispose();
     this.scene.remove(this.heightMesh);
     this.heightMesh = new Mesh(this.geometry3D, this.material3D);
@@ -209,27 +216,32 @@ export default class MapViewer extends Vue {
     this.heightMesh.geometry.computeVertexNormals();
 
     this.scene.add(this.heightMesh);
+  }
 
-    // Draw rover path
-    var material = new LineBasicMaterial({color: 0x0000ff});
-    var geometry = new Geometry();
-    this.roverPath.forEach((point: any) => {
+  private drawPath(): void {
+    const material = new LineBasicMaterial({color: 0x0000ff});
+    const geometry = new Geometry();
+    if (this.roverPath) {
+      this.roverPath.forEach((point: any) => {
       geometry.vertices.push(
-        new Vector3(
-          this.vertices[(point.x * 2048 + point.y) * 3],
-          this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
-          this.vertices[(point.x * 2048 + point.y) * 3 + 2]
-        )
-      );
-    });
-    var line = new Line(geometry, material);
+          new Vector3(
+            this.vertices[(point.x * 2048 + point.y) * 3],
+            this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
+            this.vertices[(point.x * 2048 + point.y) * 3 + 2]
+          )
+        );
+      });
+    }
+    
+    const line = new Line(geometry, material);
     this.scene.add(line);
+  }
 
-    // Draw all points
+  private drawPoints(): void {
     this.points.forEach((point: Point) => {
-      var geometry = new SphereGeometry(5, 32, 32 );
-      var material = new MeshBasicMaterial({color: 0x0000ff});
-      var sphere = new Mesh(geometry, material);
+      const geometry = new SphereGeometry(5, 32, 32 );
+      const material = new MeshBasicMaterial({color: 0x0000ff});
+      const sphere = new Mesh(geometry, material);
       sphere.position.set(
         this.vertices[(point.x * 2048 + point.y) * 3],
         this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,

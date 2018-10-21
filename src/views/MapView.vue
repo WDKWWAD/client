@@ -2,7 +2,7 @@
   <div class="map-view__box">
     <!-- <LoadingScreen/> -->
     <router-view @addPoint="addPoint" :points="pointManager.currentPoints"></router-view>
-    <PlanJourney :canStart="canStart"/>
+    <PlanJourney :canStart="canStart" @startMission="startMission"/>
     <SwitchButton/>
   </div>
 </template>
@@ -29,6 +29,20 @@ export default class MapView extends Vue {
 
   public addPoint(point: Point): void {
     this.pointManager.addNewPoint(point);
+  }
+
+  public startMission(): void {
+    this.$http.post('http://localhost:5000/api/path', this.pointManager.currentPoints).then((response : any) => {
+      const responseBody = {
+        totalDistance: response.body['total_distance'],
+        hysometricProfile: response.body['hypsometric_profile'],
+        path: response.body['path']
+      }
+      this.$router.push({name: 'statistics', params: responseBody})
+    }, (response: any) => {
+        console.log('There was an error posting points. Response:');
+        console.log(response);
+    });
   }
 
   get canStart(): boolean {
