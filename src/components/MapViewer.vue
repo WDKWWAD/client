@@ -18,17 +18,21 @@ import {
   LineBasicMaterial,
   Geometry,
   Vector3,
-  Line, SphereGeometry, MeshBasicMaterial
+  Line,
+  SphereGeometry,
+  MeshBasicMaterial
 } from "three";
 
 import { OrbitControls } from "@avatsaev/three-orbitcontrols-ts";
-import Point from '@/model/Point.model';
+import Point from "@/model/Point.model";
 
 @Component
 export default class MapViewer extends Vue {
-  @Prop() private points!: Point[];
-  @Prop() private roverPath?: Point[];
-  
+  @Prop()
+  private points!: Point[];
+  @Prop()
+  private roverPath?: Point[];
+
   PATH_SPACE = 5;
   path: string = "../assets/map.png";
 
@@ -54,8 +58,8 @@ export default class MapViewer extends Vue {
 
   color: string = "#d3d3d3";
 
-  tileXCount = 1; //this.heightmapWidth / this.widthDestination;
-  tileYCount = 1; //this.heightmapWidth / this.widthDestination;
+  tileXCount = 1;
+  tileYCount = 1;
 
   tileXStart = 0;
   tileXFinish = this.tileXStart + this.tileXCount;
@@ -64,6 +68,8 @@ export default class MapViewer extends Vue {
   tileYStart = 0;
   tileYFinish = this.tileYStart + this.tileYCount;
   tileY = this.tileYStart;
+
+  animationFrameHandle: number = -1;
 
   css: any;
   renderer: any;
@@ -92,6 +98,11 @@ export default class MapViewer extends Vue {
     });
   }
 
+  public beforeDestroy() {
+    window.console.log("Before destroy");
+    this.cleanup();
+  }
+
   private init(): void {
     let rendererParams: WebGLRendererParameters = {
       alpha: true,
@@ -101,7 +112,7 @@ export default class MapViewer extends Vue {
 
     this.renderer = new WebGLRenderer(rendererParams);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    const divRenderer: any = document.getElementById('mapViewer');
+    const divRenderer: any = document.getElementById("mapViewer");
     divRenderer.appendChild(this.renderer.domElement);
 
     this.camera = new PerspectiveCamera(
@@ -129,9 +140,6 @@ export default class MapViewer extends Vue {
     spotLight.castShadow = true;
     this.scene.add(spotLight);
 
-    window.addEventListener("resize", this.onWindowResize, false);
-
-    // assets
     var axisHelper = new AxesHelper(50);
     this.scene.add(axisHelper);
 
@@ -204,7 +212,6 @@ export default class MapViewer extends Vue {
     this.drawMesh();
     this.drawPath();
     this.drawPoints();
-    
   }
 
   private drawMesh(): void {
@@ -219,11 +226,11 @@ export default class MapViewer extends Vue {
   }
 
   private drawPath(): void {
-    const material = new LineBasicMaterial({color: 0x0000ff});
+    const material = new LineBasicMaterial({ color: 0x0000ff });
     const geometry = new Geometry();
     if (this.roverPath) {
       this.roverPath.forEach((point: any) => {
-      geometry.vertices.push(
+        geometry.vertices.push(
           new Vector3(
             this.vertices[(point.x * 2048 + point.y) * 3],
             this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
@@ -232,7 +239,7 @@ export default class MapViewer extends Vue {
         );
       });
     }
-    
+
     const line = new Line(geometry, material);
     this.scene.add(line);
   }
@@ -240,35 +247,45 @@ export default class MapViewer extends Vue {
   private drawPoints(): void {
     if (this.points) {
       this.points.forEach((point: Point) => {
-        const geometry = new SphereGeometry(5, 32, 32 );
-        const material = new MeshBasicMaterial({color: 0x0000ff});
+        const geometry = new SphereGeometry(5, 32, 32);
+        const material = new MeshBasicMaterial({ color: 0x0000ff });
         const sphere = new Mesh(geometry, material);
         sphere.position.set(
           this.vertices[(point.x * 2048 + point.y) * 3],
           this.vertices[(point.x * 2048 + point.y) * 3 + 1] + this.PATH_SPACE,
-          this.vertices[(point.x * 2048 + point.y) * 3 + 2]);
+          this.vertices[(point.x * 2048 + point.y) * 3 + 2]
+        );
         this.scene.add(sphere);
       });
     }
   }
 
-  private onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  private animate(): void {
+    this.animationFrameHandle = requestAnimationFrame(this.animate);
+    this.renderer.render(this.scene, this.camera);
   }
 
-  private animate(): void {
-    this.controls.autoRotate = false;
+  private cleanup(): void {
+    this.renderer.dispose();
+    this.geometry3D.dispose();
+    this.material3D.dispose();
+    delete this.renderer;
+    delete this.scene;
+    delete this.camera;
+    delete this.controls;
+    delete this.geometry;
+    delete this.geometry3D;
+    delete this.material3D;
 
-    requestAnimationFrame(this.animate);
-    this.renderer.render(this.scene, this.camera);
+    if (this.animationFrameHandle > 0) {
+      cancelAnimationFrame(this.animationFrameHandle);
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-@import '../styles/mixins';
+@import "../styles/mixins";
 
 .map-view {
   &__box {
