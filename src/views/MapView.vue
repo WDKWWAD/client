@@ -37,13 +37,15 @@ export default class MapView extends Vue {
   public startMission(): void {
     this.$router.push({name: 'loading'});
     this.$http.post('http://localhost:5000/api/path', {'points': this.pointManager.currentPoints}).then((response : any) => {
-      this.pointManager.resetPoints();
+      window.console.log('this.pointManager.currentPoints:', this.pointManager.currentPoints);
       const responseBody = {
         totalDistance: response.body['total_distance'],
         hypsometricProfile: response.body['hypsometric_profile'],
-        path: response.body['path']
-      }
-      this.$router.push({name: 'statistics', params: responseBody})
+        path: response.body['path'],
+        points: this.pointManager.currentPoints as any
+      };
+      this.$router.push({name: 'statistics', params: responseBody});
+      this.pointManager.resetPoints();
     }, (response: any) => {
         console.log('There was an error posting points. Response:');
         console.log(response);
@@ -66,6 +68,7 @@ export default class MapView extends Vue {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: url('../assets/landing-blurred.jpg') center / cover no-repeat;
     overflow: hidden;
   }
 }

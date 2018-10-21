@@ -1,6 +1,6 @@
 <template>
   <div class="switch__box">
-    <router-link :to="{ name: this.$route.name === '2d' ? '3d' : '2d'}" class="switch__button">Switch to {{this.nextView()}} preview</router-link>
+    <router-link :to="{ name: this.$route.name === '2d' ? '3d' : '2d'}" class="switch__button card-3">Switch to {{this.nextView()}} preview</router-link>
   </div>
 </template>
 

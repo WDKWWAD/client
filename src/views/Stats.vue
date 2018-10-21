@@ -1,6 +1,6 @@
 <template>
   <div class="stats__box">
-    <MapViewer :roverPath="responseBody.path" />
+    <MapViewer :points="responseBody.points" :roverPath="responseBody.path" />
     <div class="stats__content">
       <div class="stats__card">
         <h1>Estimates</h1>
@@ -53,6 +53,7 @@ export default class Stats extends Vue {
     display: flex;
     align-items: center;
     justify-content: center;
+    background: url('../assets/landing-blurred.jpg') center / cover no-repeat;
     overflow: hidden;
   }
 
@@ -71,7 +72,7 @@ export default class Stats extends Vue {
     border-radius: 10px;
     color: $color-on-dark;
     width: 27em;
-    padding: 1em 0.5em;
+    padding: 1em 2em;
     margin: 1em;
     h1 {
       font-size: 1.2em;
