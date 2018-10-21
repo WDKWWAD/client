@@ -25,19 +25,7 @@ export default class LoadingScreen extends Vue {
     this.changeTooltip();
   }
 
-  private simulateMission() : void {
-    let data = { "points": [ { "x": 500,  "y": 500 }, { "x": 1800,  "y": 2000 }]};
-    this.$http.post('http://localhost:5000/api/path', data).then((response : any) => {
-      this.total_distance = response.body['total_distance'];
-      this.hypsometric_profile = response.body['hypsometric_profile'];
-      this.path = response.body['path'];
-    }, (response: any) => {
-        // error callback
-    });
-  }
-
   private changeTooltip() : void {
-    this.simulateMission();
     let nextTooltipIndex = this.tooltips.indexOf(this.currentTooltip) + 1;
     if ( nextTooltipIndex == 0) {
       this.currentTooltip = this.tooltips[0];
