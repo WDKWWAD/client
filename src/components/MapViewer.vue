@@ -4,7 +4,7 @@
     </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import {
   WebGLRenderer,
   PerspectiveCamera,
@@ -14,17 +14,7 @@ import {
   PlaneBufferGeometry,
   Matrix4,
   MeshNormalMaterial,
-  Mesh,
-  Object3D,
-  SpriteMaterial,
-  Sprite,
-  NearestFilter,
-  LineBasicMaterial,
-  Geometry,
-  Line,
-  Texture,
-  Vector3,
-  Color
+  Mesh, MeshDepthMaterial, MeshLambertMaterial, AmbientLight, SpotLight,
 } from "three";
 
 import { OrbitControls } from "@avatsaev/three-orbitcontrols-ts";
@@ -32,8 +22,6 @@ import { OrbitControls } from "@avatsaev/three-orbitcontrols-ts";
 @Component
 export default class MapViewer extends Vue {
   path: string = "../assets/example_map.png";
-  gazetteerFile = this.path + "moon/gazetteer/moon-iau-nomenclature.csv";
-  gazetteer: any;
 
   heightmapCanvas: any;
   heightmapContext: any;
@@ -43,8 +31,6 @@ export default class MapViewer extends Vue {
   geometry3D: any;
   material3D: any;
 
-  selPlace: any;
-
   heightMesh: any;
 
   heightmapWidth = 2048;
@@ -53,17 +39,11 @@ export default class MapViewer extends Vue {
   widthDestination = this.heightmapWidth;
   heightDestination = this.heightmapHeight;
 
-  scale = 0.1;
+  scale = 0.07;
   scaleAdjust = 0.065;
   scl = this.scale * this.scaleAdjust;
 
-  placards: any;
-  placardYPosition = 0;
-
   color: string = "#d3d3d3";
-
-  // Copernicus,Archetypal large complex crater,9.7N,20.1W
-  selectedPlace = 1753; // Copernicus
 
   tileXCount = 1; //this.heightmapWidth / this.widthDestination;
   tileYCount = 1; //this.heightmapWidth / this.widthDestination;
@@ -76,25 +56,12 @@ export default class MapViewer extends Vue {
   tileYFinish = this.tileYStart + this.tileYCount;
   tileY = this.tileYStart;
 
-  startTime = performance.now();
-  delayTime = 2000;
-  autoRotateSpeed = 0.2;
-
   css: any;
-  menu: any;
-  stats: any;
   renderer: any;
   scene: any;
   camera: any;
   controls: any;
   geometry: any;
-  material: any;
-  mesh: any;
-  hamburger: any;
-  chkGradient: any;
-
-  // checkbox on UI
-  chkRotate: any;
 
   mounted() {
     this.$nextTick(function() {
@@ -140,6 +107,16 @@ export default class MapViewer extends Vue {
 
     this.scene = new Scene();
 
+    var ambientLight = new AmbientLight(0xffffff);
+    this.scene.add(ambientLight);
+
+    var spotLight = new SpotLight(0xaaaaaa);
+    spotLight.position.set(0, 1000, 0);
+    spotLight.angle = Math.PI / 2;
+    spotLight.intensity = 0.7;
+    spotLight.castShadow = true;
+    this.scene.add(spotLight);
+
     window.addEventListener("resize", this.onWindowResize, false);
 
     // assets
@@ -162,7 +139,7 @@ export default class MapViewer extends Vue {
     this.geometry3D.applyMatrix(new Matrix4().makeRotationX(-0.5 * Math.PI));
     this.vertices = this.geometry3D.attributes.position.array;
 
-    this.material3D = new MeshNormalMaterial({ side: 2 });
+    this.material3D = new MeshLambertMaterial({ side: 2, color: 0x555555 });
     this.heightMesh = new Mesh(this.geometry3D.clone(), this.material3D);
 
     this.tile = document.createElement("img");
@@ -211,7 +188,7 @@ export default class MapViewer extends Vue {
     ).data;
 
     for (let i = 1, j = 0; i < this.vertices.length; i += 3, j += 4) {
-      this.vertices[i] = this.scl * (map[j] + 255 * map[j + 1]) - 300;
+      this.vertices[i] = this.scl * (map[j] + 255 * map[j + 1]) - 150;
     }
 
     this.heightMesh.geometry.dispose();
@@ -224,104 +201,10 @@ export default class MapViewer extends Vue {
     this.scene.add(this.heightMesh);
   }
 
-  // draw placards
-  private drawSprite(
-    text: string,
-    scale: number,
-    color: any,
-    x: number,
-    y: number,
-    z: number
-  ) {
-    var texture = this.canvasMultilineText(text, { backgroundColor: color });
-    if (texture) {
-      texture.minFilter = texture.magFilter = NearestFilter;
-    } else {
-      return;
-    }
-
-    var spriteMaterial = new SpriteMaterial({
-      map: texture,
-      opacity: 0.9,
-      transparent: true
-    });
-    var sprite = new Sprite(spriteMaterial);
-    sprite.position.set(x, y, z);
-    sprite.scale.set(
-      scale * texture.image.width,
-      scale * texture.image.height,
-      1
-    );
-    this.placards.add(sprite);
-
-    var geometry = new Geometry();
-    geometry.vertices = [this.v(x, 0, z), this.v(x, y, z)];
-    var material = new LineBasicMaterial({ color: 0xaaaaaa });
-    var line = new Line(geometry, material);
-    this.placards.add(line);
-  }
-
-  private canvasMultilineText(
-    textArray: string | string[],
-    parameters: any
-  ): Texture | undefined {
-    parameters = parameters || {};
-    let width = 0;
-    let canvas = document.createElement("canvas");
-    let context = canvas.getContext("2d");
-
-    if (typeof textArray === "string") textArray = [textArray];
-
-    if (context != null) {
-      context.font = parameters.font ? parameters.font : "48px sans-serif";
-
-      for (let i = 0, len = textArray.length; i < len; i++) {
-        width =
-          context.measureText(textArray[i]).width > width
-            ? context.measureText(textArray[i]).width
-            : width;
-      }
-
-      canvas.width = width + 20; // 480
-      canvas.height = textArray.length * 60;
-
-      var col = parameters.backgroundColor ? parameters.backgroundColor : 120;
-
-      context.fillStyle = "hsl( " + col + ", 80%, 50% )";
-      context.fillRect(0, 0, canvas.width, canvas.height);
-
-      context.lineWidth = 1;
-      context.strokeStyle = "#000";
-      context.strokeRect(0, 0, canvas.width, canvas.height);
-
-      context.fillStyle = "#000";
-      context.font = parameters.font ? parameters.font : "48px sans-serif";
-
-      for (let i = 0, len = textArray.length; i < len; i++) {
-        context.fillText(textArray[i], 10, 48 + i * 60);
-      }
-
-      var texture = new Texture(canvas);
-      texture.minFilter = texture.magFilter = NearestFilter;
-      texture.needsUpdate = true;
-
-      return texture;
-    }
-  }
-
   private onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-  }
-
-  private onMouseMove() {
-    this.startTime = this.chkRotate.checked ? performance.now() : 1000000;
-    this.controls.autoRotate = false;
-  }
-
-  private v(x: number, y: number, z: number) {
-    return new Vector3(x, y, z);
   }
 
   private animate(): void {
